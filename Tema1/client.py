@@ -31,12 +31,6 @@ def send_data_TCP_streaming(localhost, port, size, num, buffer):
         total_bytes_sent += len(message)
 
         data = sock.recv(buffer)
-        #print(f"Clientul a primit mesajul de la server!")
-
-    #sent = sock.sendall(b"Conexiune oprita!")
-
-    #data = sock.recv(buffer)
-    #print(data.decode())
 
     end_time = time.time()
     elapsed_time = end_time - start_time
@@ -76,16 +70,10 @@ def send_data_TCP_stop_and_wait(localhost, port, size, num, buffer):
             data = sock.recv(buffer)
 
             if (data.decode() == "Serverul a primit mesajul!"):
-                #print(f"Clientul a primit mesajul de la server!")
                 total_bytes_sent += len(message)
 
                 sent = sock.sendall(b"Clientul a primit mesajul de la server!")
                 break
-
-    #sent = sock.sendall(b"Conexiune oprita!")
-
-    #data = sock.recv(buffer)
-    #print(data.decode())
 
     end_time = time.time()
     elapsed_time = end_time - start_time
@@ -122,14 +110,6 @@ def send_data_UDP_streaming(localhost, port, size, num, buffer):
             bytes_sent += len(chunk)
 
         total_bytes_sent += len(message)
-
-        #data, server = sock.recvfrom(buffer)
-        #print(f"Clientul a primit mesajul de la server!")
-
-    #sent = sock.sendall(b"Conexiune oprita!")
-
-    #data = sock.recv(buffer)
-    #print(data.decode())
 
     end_time = time.time()
     elapsed_time = end_time - start_time
@@ -169,19 +149,9 @@ def send_data_UDP_stop_and_wait(localhost, port, size, num, buffer):
             data, server = sock.recvfrom(buffer)
 
             if (data.decode() == "Serverul a primit mesajul!"):
-                #print(f"Clientul a primit mesajul de la server!")
                 total_bytes_sent += len(message)
-
                 sent = sock.sendto(b"Clientul a primit mesajul de la server!", server)
                 break
-
-        #data, server = sock.recvfrom(buffer)
-        #print(f"Clientul a primit mesajul de la server!")
-
-    #sent = sock.sendall(b"Conexiune oprita!")
-
-    #data = sock.recv(buffer)
-    #print(data.decode())
 
     end_time = time.time()
     elapsed_time = end_time - start_time

@@ -15,12 +15,10 @@ def start_server_TCP_streaming(localhost, port):
 
     sock.listen(1)
 
-    #print(
-    #    f"A?tept conexiune de la un client pe {server_address[0]}:{server_address[1]}")
+    # Astept conexiune de la un client
     connection, client_address = sock.accept()
 
-    #print(
-    #    f"S-a stabilit conexiunea cu clientul {client_address[0]}:{client_address[1]}")
+    # S-a stabilit conexiunea cu clientul
 
     message_size = int(connection.recv(65535))
     buffer = int(connection.recv(65535))
@@ -38,29 +36,27 @@ def start_server_TCP_streaming(localhost, port):
             while bytes_read < message_size:
                 chunk = connection.recv(buffer)
                 if not chunk:
-                    # Dac? nu mai sunt date de primit, ie?im din bucl?
+                    # Daca nu mai sunt date de primit, iesim din bucla
                     break
                 message += chunk
                 bytes_read += len(chunk)
 
             if not message:
-                # Dac? nu s-a primit niciun mesaj, ie?im din bucl?
+                # Daca nu s-a primit niciun mesaj, ie?im din bucla
                 break
             else:
                 total_bytes_read += len(message)
                 total_messages_read += 1
                 connection.sendall(b"Serverul a primit mesajul!")
 
-            # Aici pute?i face procesarea mesajului
-
-            # Reseteaz? timpul
+            # Reseteaza timpul
             last_message_time = time.time()
 
         except socket.timeout:
-            # Dac? a expirat timeout-ul, ie?im din bucl?
+            # Daca a expirat timeout-ul, iesim din bucla
             break
 
-        # Verific? dac? a trecut suficient timp de la primirea ultimului mesaj
+        # Verifica daca a trecut suficient timp de la primirea ultimului mesaj
         if time.time() - last_message_time > max_idle_time:
             break
 
@@ -83,12 +79,10 @@ def start_server_TCP_stop_and_wait(localhost, port):
 
     sock.listen(1)
 
-    #print(
-    #    f"A?tept conexiune de la un client pe {server_address[0]}:{server_address[1]}")
+    # Astept conexiune de la un client
     connection, client_address = sock.accept()
 
-    #print(
-    #    f"S-a stabilit conexiunea cu clientul {client_address[0]}:{client_address[1]}")
+    # S-a stabilit conexiunea cu clientul
 
     message_size = int(connection.recv(65535))
     buffer = int(connection.recv(65535))
@@ -106,13 +100,13 @@ def start_server_TCP_stop_and_wait(localhost, port):
             while bytes_read < message_size:
                 chunk = connection.recv(buffer)
                 if not chunk:
-                    # Dac? nu mai sunt date de primit, ie?im din bucl?
+                    # Daca nu mai sunt date de primit, iesim din bucla
                     break
                 message += chunk
                 bytes_read += len(chunk)
 
             if not message:
-                # Dac? nu s-a primit niciun mesaj, ie?im din bucl?
+                # Daca nu s-a primit niciun mesaj, iesim din bucla
                 break
             else:
                 total_bytes_read += len(message)
@@ -123,21 +117,17 @@ def start_server_TCP_stop_and_wait(localhost, port):
                     if (data.decode() == "Clientul a primit mesajul de la server!"):
                         total_messages_read += 1
                         break
-
-            # Aici pute?i face procesarea mesajului
-
-            # Reseteaz? timpul
+            
+            # Reseteaza timpul
             last_message_time = time.time()
 
         except socket.timeout:
-            # Dac? a expirat timeout-ul, ie?im din bucl?
+            # Daca a expirat timeout-ul, iesim din bucla
             break
 
-        # Verific? dac? a trecut suficient timp de la primirea ultimului mesaj
+        # Verifica daca a trecut suficient timp de la primirea ultimului mesaj
         if time.time() - last_message_time > max_idle_time:
             break
-
-        #print(f"Serverul a primit mesajul: {data.decode()}")
 
     print(f"Protocol folosit: {args.connection.upper()}")
     print(f"Num?r de mesaje citite: {total_messages_read}")
@@ -156,9 +146,7 @@ def start_server_UDP_streaming(localhost, port):
     server_address = (localhost, port)
     sock.bind(server_address)
 
-    #print(
-    #    f"A?tept conexiune de la un client pe {server_address[0]}:{server_address[1]}")
-
+    # Astept conexiune de la un client
     message_size, client_address = sock.recvfrom(65507)
     buffer, client_address = sock.recvfrom(65507)
 
@@ -174,33 +162,31 @@ def start_server_UDP_streaming(localhost, port):
         message = b''
         bytes_read = 0
 
-        # try:
         while bytes_read < message_size:
             try:
                 chunk, client_address = sock.recvfrom(buffer)
                 if not chunk:
-                    # Dac? nu mai sunt date de primit, ie?im din bucl?
+                    # Daca nu mai sunt date de primit, iesim din bucla
                     break
                 message += chunk
                 bytes_read += len(chunk)
 
-                # Reseteaz? timpul
+                # Reseteaza timpul
                 last_message_time = time.time()
             except socket.timeout:
-                # Dac? a expirat timeout-ul, ie?im din bucl?
+                # Daca a expirat timeout-ul, iesim din bucla
                 break
 
-            # Verific? dac? a trecut suficient timp de la primirea ultimului mesaj
+            # Verifica daca a trecut suficient timp de la primirea ultimului mesaj
             if time.time() - last_message_time > max_idle_time:
                 break
 
         if not message:
-            # Dac? nu s-a primit niciun mesaj, ie?im din bucl?
+            # Daca nu s-a primit niciun mesaj, iesim din bucla
             break
         else:
             total_bytes_read += len(message)
             total_messages_read += 1
-            #sock.sendto(b"Serverul a primit mesajul!", client_address)
 
 
     print(f"Protocol folosit: {args.connection.upper()}")
@@ -219,8 +205,7 @@ def start_server_UDP_stop_and_wait(localhost, port):
     server_address = (localhost, port)
     sock.bind(server_address)
 
-    #print(
-    #    f"A?tept conexiune de la un client pe {server_address[0]}:{server_address[1]}")
+    # Astept conexiune de la un client
 
     message_size, client_address = sock.recvfrom(65507)
     buffer, client_address = sock.recvfrom(65507)
@@ -237,28 +222,28 @@ def start_server_UDP_stop_and_wait(localhost, port):
         message = b''
         bytes_read = 0
 
-        # try:
         while bytes_read < message_size:
             try:
                 chunk, client_address = sock.recvfrom(buffer)
                 if not chunk:
-                    # Dac? nu mai sunt date de primit, ie?im din bucl?
+                    # Daca nu mai sunt date de primit, iesim din bucla
                     break
                 message += chunk
                 bytes_read += len(chunk)
 
-                # Reseteaz? timpul
+                # Reseteaza timpul
                 last_message_time = time.time()
+
             except socket.timeout:
-                # Dac? a expirat timeout-ul, ie?im din bucl?
+                # Daca a expirat timeout-ul, iesim din bucla
                 break
 
-            # Verific? dac? a trecut suficient timp de la primirea ultimului mesaj
+            # Verifica daca a trecut suficient timp de la primirea ultimului mesaj
             if time.time() - last_message_time > max_idle_time:
                 break
 
         if not message:
-            # Dac? nu s-a primit niciun mesaj, ie?im din bucl?
+            # Daca nu s-a primit niciun mesaj, iesim din bucla
             break
         else:
             total_bytes_read += len(message)
