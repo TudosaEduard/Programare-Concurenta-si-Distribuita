@@ -20,8 +20,8 @@ def start_server_TCP_streaming(localhost, port):
 
     # S-a stabilit conexiunea cu clientul
 
-    message_size = int(connection.recv(65535))
-    buffer = int(connection.recv(65535))
+    message_size = int(connection.recv(65535), 10)
+    buffer = int(connection.recv(65535), 10)
 
     print("Message size : " + str(message_size) + "   Buffer : " + str(buffer))
 
@@ -61,8 +61,8 @@ def start_server_TCP_streaming(localhost, port):
             break
 
     print(f"Protocol folosit: {args.connection.upper() }")
-    print(f"Num?r de mesaje citite: {total_messages_read}")
-    print(f"Num?r de bytes citi?i: {total_bytes_read}")
+    print(f"Numar de mesaje citite: {total_messages_read}")
+    print(f"Numar de bytes cititi: {total_bytes_read}")
 
     connection.close()
     sock.close()
@@ -130,8 +130,8 @@ def start_server_TCP_stop_and_wait(localhost, port):
             break
 
     print(f"Protocol folosit: {args.connection.upper()}")
-    print(f"Num?r de mesaje citite: {total_messages_read}")
-    print(f"Num?r de bytes citi?i: {total_bytes_read}")
+    print(f"Numar de mesaje citite: {total_messages_read}")
+    print(f"Numar de bytes cititi: {total_bytes_read}")
 
     connection.close()
     sock.close()
@@ -190,8 +190,8 @@ def start_server_UDP_streaming(localhost, port):
 
 
     print(f"Protocol folosit: {args.connection.upper()}")
-    print(f"Num?r de mesaje citite: {total_messages_read}")
-    print(f"Num?r de bytes citi?i: {total_bytes_read}")
+    print(f"Numar de mesaje citite: {total_messages_read}")
+    print(f"Numar de bytes cititi: {total_bytes_read}")
 
     sock.close()
 
@@ -228,6 +228,12 @@ def start_server_UDP_stop_and_wait(localhost, port):
                 if not chunk:
                     # Daca nu mai sunt date de primit, iesim din bucla
                     break
+                while True:
+                    sock.sendto(b"Serverul a primit mesajul!", client_address)
+                    data, client_address = sock.recvfrom(buffer)
+
+                    if (data.decode() == "Clientul a primit mesajul de la server!"):
+                        break
                 message += chunk
                 bytes_read += len(chunk)
 
@@ -247,18 +253,12 @@ def start_server_UDP_stop_and_wait(localhost, port):
             break
         else:
             total_bytes_read += len(message)
-            while True:
-                sock.sendto(b"Serverul a primit mesajul!", client_address)
-                data, client_address = sock.recvfrom(buffer)
-
-                if (data.decode() == "Clientul a primit mesajul de la server!"):
-                    total_messages_read += 1
-                    break
+            total_messages_read += 1
 
 
     print(f"Protocol folosit: {args.connection.upper()}")
-    print(f"Num?r de mesaje citite: {total_messages_read}")
-    print(f"Num?r de bytes citi?i: {total_bytes_read}")
+    print(f"Numar de mesaje citite: {total_messages_read}")
+    print(f"Numar de bytes cititi: {total_bytes_read}")
 
     sock.close()
 

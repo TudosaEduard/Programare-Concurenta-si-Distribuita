@@ -36,8 +36,8 @@ def send_data_TCP_streaming(localhost, port, size, num, buffer):
     elapsed_time = end_time - start_time
 
     print(f"Timpul total de transmisie: {elapsed_time:.3f} secunde")
-    print(f"Num?r de mesaje trimise: {num}")
-    print(f"Num?r de bytes trimi?i: {total_bytes_sent}")
+    print(f"Numar de mesaje trimise: {num}")
+    print(f"Numar de bytes trimisi: {total_bytes_sent}")
 
     sock.close()
 
@@ -79,8 +79,8 @@ def send_data_TCP_stop_and_wait(localhost, port, size, num, buffer):
     elapsed_time = end_time - start_time
 
     print(f"Timpul total de transmisie: {elapsed_time:.3f} secunde")
-    print(f"Num?r de mesaje trimise: {num}")
-    print(f"Num?r de bytes trimi?i: {total_bytes_sent}")
+    print(f"Numar de mesaje trimise: {num}")
+    print(f"Numar de bytes trimisi: {total_bytes_sent}")
 
     sock.close()
 
@@ -115,8 +115,8 @@ def send_data_UDP_streaming(localhost, port, size, num, buffer):
     elapsed_time = end_time - start_time
 
     print(f"Timpul total de transmisie: {elapsed_time:.3f} secunde")
-    print(f"Num?r de mesaje trimise: {num}")
-    print(f"Num?r de bytes trimi?i: {total_bytes_sent}")
+    print(f"Numar de mesaje trimise: {num}")
+    print(f"Numar de bytes trimisi: {total_bytes_sent}")
 
     sock.close()
 
@@ -143,22 +143,22 @@ def send_data_UDP_stop_and_wait(localhost, port, size, num, buffer):
         while bytes_sent < message_size:
             chunk = message[bytes_sent:bytes_sent + buffer]
             data = sock.sendto(chunk, server_address)
+
+            while True:
+                data, server = sock.recvfrom(buffer)
+
+                if (data.decode() == "Serverul a primit mesajul!"):
+                    sent = sock.sendto(b"Clientul a primit mesajul de la server!", server)
+                    break
             bytes_sent += len(chunk)
-
-        while True:
-            data, server = sock.recvfrom(buffer)
-
-            if (data.decode() == "Serverul a primit mesajul!"):
-                total_bytes_sent += len(message)
-                sent = sock.sendto(b"Clientul a primit mesajul de la server!", server)
-                break
+        total_bytes_sent += len(message)
 
     end_time = time.time()
     elapsed_time = end_time - start_time
 
     print(f"Timpul total de transmisie: {elapsed_time:.3f} secunde")
-    print(f"Num?r de mesaje trimise: {num}")
-    print(f"Num?r de bytes trimi?i: {total_bytes_sent}")
+    print(f"Numar de mesaje trimise: {num}")
+    print(f"Numar de bytes trimisi: {total_bytes_sent}")
 
     sock.close()
 
